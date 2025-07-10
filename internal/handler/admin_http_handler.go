@@ -11,6 +11,7 @@ import (
 	"github.com/yu1ec/go-shorten/internal/auth"
 	"github.com/yu1ec/go-shorten/internal/session"
 	"github.com/yu1ec/go-shorten/internal/storage"
+	html_templates "github.com/yu1ec/go-shorten/templates"
 )
 
 // AdminHTTPHandler 管理界面处理器
@@ -33,11 +34,29 @@ func NewAdminHTTPHandler(urlStorage *storage.URLStorage, userManager *auth.UserM
 	}
 
 	for _, file := range templateFiles {
-		// 每个模板都包含layout.html和对应的内容模板
-		tmpl := template.Must(template.ParseFiles(
-			"templates/layout.html",
-			"templates/"+file,
-		))
+		// 从embed读取模板文件
+		layoutContent, err := html_templates.AdminUIFS.ReadFile("layout.html")
+		if err != nil {
+			log.Fatalf("读取layout.html失败: %v", err)
+		}
+
+		pageContent, err := html_templates.AdminUIFS.ReadFile(file)
+		if err != nil {
+			log.Fatalf("读取%s失败: %v", file, err)
+		}
+
+		// 创建模板并解析
+		tmpl := template.New(file)
+		tmpl, err = tmpl.Parse(string(layoutContent))
+		if err != nil {
+			log.Fatalf("解析layout.html失败: %v", err)
+		}
+
+		tmpl, err = tmpl.Parse(string(pageContent))
+		if err != nil {
+			log.Fatalf("解析%s失败: %v", file, err)
+		}
+
 		templates[file] = tmpl
 	}
 
@@ -47,7 +66,12 @@ func NewAdminHTTPHandler(urlStorage *storage.URLStorage, userManager *auth.UserM
 	}
 
 	for _, file := range standaloneFiles {
-		tmpl := template.Must(template.ParseFiles("templates/" + file))
+		content, err := html_templates.AdminUIFS.ReadFile(file)
+		if err != nil {
+			log.Fatalf("读取%s失败: %v", file, err)
+		}
+
+		tmpl := template.Must(template.New(file).Parse(string(content)))
 		templates[file] = tmpl
 	}
 
