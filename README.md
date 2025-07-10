@@ -74,3 +74,9 @@ services:
       - ./data:/app/data
     restart: unless-stopped
 ```
+
+## 简易后台管理
+登录界面: http://localhost:5768/login
+管理面板: http://localhost:5768/admin
+短链接管理: http://localhost:5768/admin/urls
+用户管理: http://localhost:5768/admin/users

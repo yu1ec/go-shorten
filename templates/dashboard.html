@@ -1,0 +1,106 @@
+{{define "content"}}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">短链接列表</h5>
+                <span class="badge bg-primary">总计: {{.urlCount}} 个</span>
+            </div>
+            <div class="card-body p-0">
+                {{if .urls}}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>短链接</th>
+                                <th>目标URL</th>
+                                <th class="d-none d-md-table-cell">备注</th>
+                                <th class="d-none d-lg-table-cell">创建时间</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{range .urls}}
+                            <tr>
+                                <td>
+                                    <a href="/{{.ShortCode}}" target="_blank" class="text-decoration-none">
+                                        <i class="fas fa-external-link-alt me-1"></i>
+                                        <span class="fw-medium">{{.ShortCode}}</span>
+                                    </a>
+                                </td>
+                                <td>
+                                    <div class="url-column" data-bs-toggle="tooltip" title="{{.TargetURL}}">
+                                        {{.TargetURL}}
+                                    </div>
+                                </td>
+                                <td class="d-none d-md-table-cell">
+                                    {{if .Remark}}
+                                        <span class="text-muted">{{.Remark}}</span>
+                                    {{else}}
+                                        <span class="text-muted">-</span>
+                                    {{end}}
+                                </td>
+                                <td class="d-none d-lg-table-cell">
+                                    <small class="text-muted">{{.CreateTime.Format "2006-01-02 15:04"}}</small>
+                                </td>
+                                <td>
+                                    <div class="btn-group-mobile d-md-none">
+                                        <a href="/admin/urls/{{.ShortCode}}/edit" class="btn btn-sm btn-outline-primary">
+                                            <i class="fas fa-edit"></i> 编辑
+                                        </a>
+                                        <button class="btn btn-sm btn-outline-danger delete-btn" data-short-code="{{.ShortCode}}">
+                                            <i class="fas fa-trash-alt"></i> 删除
+                                        </button>
+                                    </div>
+                                    <div class="d-none d-md-block">
+                                        <a href="/admin/urls/{{.ShortCode}}/edit" class="btn btn-sm btn-outline-primary me-1">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <button class="btn btn-sm btn-outline-danger delete-btn" data-short-code="{{.ShortCode}}">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            {{end}}
+                        </tbody>
+                    </table>
+                </div>
+                {{else}}
+                <div class="text-center py-5">
+                    <i class="fas fa-link fa-3x text-muted mb-3"></i>
+                    <h5 class="text-muted">暂无短链接记录</h5>
+                    <p class="text-muted">点击上方的"新建短链接"按钮创建您的第一个短链接</p>
+                </div>
+                {{end}}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 删除确认模态框 -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">确认删除</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                确定要删除这个短链接吗？此操作不可恢复。
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                <form id="deleteForm" method="POST" action="">
+                    <button type="submit" class="btn btn-danger">删除</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 这里不需要额外的JavaScript，因为事件处理器在layout.html中
+    console.log('Dashboard template loaded');
+</script>
+{{end}} 

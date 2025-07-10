@@ -1,0 +1,38 @@
+{{define "content"}}
+<div class="form-container">
+    {{if .error}}
+    <div class="alert alert-danger">{{.error}}</div>
+    {{end}}
+    
+    <form method="POST" action="{{if .isNew}}/admin/urls{{else}}/admin/urls/{{.shortCode}}{{end}}">
+        <div class="form-group">
+            <label for="target_url" class="form-label">目标URL <span class="text-danger">*</span></label>
+            <input type="url" class="form-control" id="target_url" name="target_url" value="{{.targetURL}}" required>
+            <small class="form-text">访问短链接将跳转到这个URL</small>
+        </div>
+        
+        <div class="form-group">
+            <label for="short_code" class="form-label">短链接代码 {{if .isNew}}(可选){{end}}</label>
+            <input type="text" class="form-control" id="short_code" name="short_code" value="{{.shortCode}}" {{if not .isNew}}readonly{{end}}>
+            <small class="form-text">
+                {{if .isNew}}
+                如不填写，系统将自动生成。只能包含字母和数字。
+                {{else}}
+                短链接代码不可修改
+                {{end}}
+            </small>
+        </div>
+        
+        <div class="form-group">
+            <label for="remark" class="form-label">备注 (可选)</label>
+            <input type="text" class="form-control" id="remark" name="remark" value="{{.remark}}">
+            <small class="form-text">为短链接添加备注说明</small>
+        </div>
+        
+        <div class="btn-toolbar">
+            <button type="submit" class="btn btn-primary">保存</button>
+            <a href="/admin" class="btn btn-outline-secondary">取消</a>
+        </div>
+    </form>
+</div>
+{{end}} 
